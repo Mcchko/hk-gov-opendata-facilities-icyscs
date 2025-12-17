@@ -610,7 +610,7 @@
             }
 
             .data-section {
-                /* max-height: 400px; */
+                max-height: 70vh;
                 padding: 15px;
             }
 
@@ -871,30 +871,6 @@
                                 <p>同一時間只能有一個活動矩形，新的矩形會替換舊的。</p>
                             </div>
                         </div>
-                        <div class="control-section">
-                            <h2 class="panel-title" id="scope-info-toggle">
-                                範圍資訊
-                                <span class="scope-info-collapse" id="collapse-icon-scope-info">
-                                    <i class="fas fa-caret-down"></i>
-                                </span>
-                            </h2>
-                            <div id="scope-info" class="scope-info" style="display: none;">
-                                <div class="scope-info-title">已選擇範圍</div>
-                                <div id="scope-coordinates" class="scope-coordinates">
-                                    北界: --°<br>
-                                    南界: --°<br>
-                                    東界: --°<br>
-                                    西界: --
-                                </div>
-                                <div class="scope-area">
-                                    <span>估算面積：</span>
-                                    <span id="scope-area-value" class="scope-area-value">-- 平方公里</span>
-                                </div>
-                            </div>
-                            <div id="empty-state" class="empty-state">
-                                <p>在地圖上繪製矩形範圍，此處將顯示相關資訊。</p>
-                            </div>
-                        </div>
                     </aside>
                     <!-- Panel Overlay for Mobile -->
                     <div class="panel-overlay" id="panel-overlay"></div>
@@ -994,32 +970,6 @@
             // 添加標記圖層
             map.addLayer(markersLayer);
 
-            // 初始化繪製控制
-            const drawControl = new L.Control.Draw({
-                position: 'bottomleft',
-                draw: {
-                    polygon: false,
-                    polyline: false,
-                    circle: false,
-                    circlemarker: false,
-                    marker: false,
-                    rectangle: {
-                        shapeOptions: {
-                            color: '#4f46e5',
-                            weight: 3,
-                            fillColor: '#4f46e5',
-                            fillOpacity: 0.15,
-                            dashArray: '8, 4'
-                        },
-                        repeatMode: false,
-                        metric: true
-                    }
-                },
-                edit: false
-            });
-
-            map.addControl(drawControl);
-
             // 處理矩形創建
             map.on(L.Draw.Event.CREATED, function (event) {
                 drawnItems.clearLayers();
@@ -1118,7 +1068,7 @@
         function createPopupContent(properties) {
             return `
                 <div style="max-width: 300px; padding: 10px;">
-                    <h3 style="margin: 0 0 10px 0; color: #4f46e5;">${properties.中心名稱 || '未命名'}</h3>
+                    <h3 style="margin: 0 0 10px 0; color: #4f46e5;">${properties.設施名稱 || '未命名'}</h3>
                     <p style="margin: 5px 0;"><strong>地區:</strong> ${properties.地區 || '未提供'}</p>
                     <p style="margin: 5px 0;"><strong>地址:</strong> ${properties.地址 || '未提供'}</p>
                     <p style="margin: 5px 0;"><strong>電話:</strong> ${properties.聯絡電話 || '未提供'}</p>
@@ -1422,7 +1372,6 @@
             const instructionsToggle = document.getElementById('instructions-toggle');
             const instructions = document.getElementById('instructions');
             const collapseIconInstructions = document.getElementById('collapse-icon-instructions');
-            const scopeInfoToggle = document.getElementById('scope-info-toggle');
             const scopeInfo = document.getElementById('scope-info');
             const collapseIconScopeInfo = document.getElementById('collapse-icon-scope-info');
             const mobileToggle = document.getElementById('mobile-toggle');
@@ -1463,20 +1412,6 @@
                 collapseIconInstructions.innerHTML = instructionsCollapsed ?
                     '<i class="fas fa-caret-right"></i>' :
                     '<i class="fas fa-caret-down"></i>';
-            });
-
-            // 範圍資訊摺疊功能
-            scopeInfoToggle.addEventListener('click', () => {
-                if (scopeInfo.style.display !== 'none') {
-                    scopeInfoCollapsed = !scopeInfoCollapsed;
-                    scopeInfo.classList.toggle('collapsed', scopeInfoCollapsed);
-                    collapseIconScopeInfo.classList.toggle('collapsed', scopeInfoCollapsed);
-                    collapseIconScopeInfo.innerHTML = scopeInfoCollapsed ?
-                        '<i class="fas fa-caret-right"></i>' :
-                        '<i class="fas fa-caret-down"></i>';
-                } else {
-                    showNotification('請先在地圖上繪製範圍以查看資訊', 'info');
-                }
             });
 
             // 面板切換功能
